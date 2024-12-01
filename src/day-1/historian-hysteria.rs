@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
@@ -15,13 +16,9 @@ fn read_locations_data(file_path: &Path) -> io::Result<(Vec<i32>, Vec<i32>)> {
         for line in lines {
             if let Ok(entry) = line {
                 let parts: Vec<&str> = entry.split_whitespace().collect();
-                if parts.len() == 2 {
-                    if let (Ok(left), Ok(right)) =
-                        (parts[0].parse::<i32>(), parts[1].parse::<i32>())
-                    {
-                        left_data.push(left);
-                        right_data.push(right);
-                    }
+                if let (Ok(left), Ok(right)) = (parts[0].parse::<i32>(), parts[1].parse::<i32>()) {
+                    left_data.push(left);
+                    right_data.push(right);
                 }
             }
         }
@@ -41,16 +38,29 @@ fn get_total_distance(mut left_data: Vec<i32>, mut right_data: Vec<i32>) -> i32 
         .sum()
 }
 
+fn get_similarity_score(left_data: Vec<i32>, right_data: Vec<i32>) -> i32 {
+    let mut freq_map = HashMap::new();
+    for num in right_data {
+        *freq_map.entry(num).or_insert(0) += 1;
+    }
+
+    left_data
+        .iter()
+        .map(|num| freq_map.get(num).unwrap_or(&0) * num)
+        .sum()
+}
+
 fn main() -> io::Result<()> {
-    let file_path = Path::new("test.data");
+    let file_path = Path::new("input.data");
     let (left_data, right_data) = read_locations_data(file_path)?;
     // println!("Left data: {:?}", left_data);
     // println!("Right data: {:?}", right_data);
 
-    println!(
-        "Total distance is {:?}",
-        get_total_distance(left_data.clone(), right_data.clone())
-    );
+    let total_distance = get_total_distance(left_data.clone(), right_data.clone());
+    println!("Total distance is {:?}", total_distance);
+
+    let similarity_score = get_similarity_score(left_data, right_data);
+    println!("Similarity score is {:?}", similarity_score);
 
     Ok(())
 }
