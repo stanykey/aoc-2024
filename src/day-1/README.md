@@ -58,3 +58,5 @@ To find the total distance between the left list and the right list, add up the 
 In the example above, this is `2 + 1 + 0 + 1 + 2 + 5`, a total distance of 11!
 
 Your actual left and right lists contain many location IDs. **What is the total distance between your lists?**
+
+Your puzzle answer was 1941353.
