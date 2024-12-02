@@ -6,7 +6,7 @@ Language of choice: `Rust`
 ## Puzzles
 
 - [x] Day 1: Historian Hysteria
-- [ ] Day 2
+- [ ] Day 2: Red-Nosed Reports
 - [ ] Day 3
 - [ ] Day 4
 - [ ] Day 5
