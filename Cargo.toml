@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+regex = "1.11.1"
 
 [[bin]]
 name = "historian-hysteria"
@@ -12,3 +13,7 @@ path = "src/day-1/historian-hysteria.rs"
 [[bin]]
 name = "red-nosed-reports"
 path = "src/day-2/red-nosed-reports.rs"
+
+[[bin]]
+name = "mull-it-over"
+path = "src/day-3/mull-it-over.rs"

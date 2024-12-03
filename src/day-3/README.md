@@ -25,3 +25,7 @@ Adding up the result of each instruction produces `161` (`2*4 + 5*5 + 11*8 + 8*5
 
 Scan the corrupted memory for uncorrupted mul instructions.
 **What do you get if you add up all of the results of the multiplications?**
+
+Your puzzle answer was `153469856`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
