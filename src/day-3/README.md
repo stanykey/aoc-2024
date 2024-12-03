@@ -52,3 +52,7 @@ function normally, including the one at the end that gets re-**enabled** by a `d
 This time, the sum of the results is **48** (`2*4 + 8*5`).
 
 Handle the new instructions; **what do you get if you add up all of the results of just the enabled multiplications?**
+
+Your puzzle answer was `77055967`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*
