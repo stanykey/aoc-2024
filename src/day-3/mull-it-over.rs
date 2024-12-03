@@ -2,19 +2,8 @@ use regex::Regex;
 use std::path::Path;
 use std::{fs, io};
 
-struct Multiply {
-    lhs: i32,
-    rhs: i32,
-}
-
-impl Multiply {
-    fn new(lhs: i32, rhs: i32) -> Self {
-        Self { lhs, rhs }
-    }
-
-    fn multiply(&self) -> i32 {
-        self.lhs * self.rhs
-    }
+enum Instruction {
+    Mul(i32, i32),
 }
 
 fn load_program_source_code(file_path: &Path) -> io::Result<String> {
@@ -25,19 +14,19 @@ fn load_program_source_code(file_path: &Path) -> io::Result<String> {
     }
 }
 
-fn compile(source_code: &str) -> Vec<Multiply> {
+fn compile(source_code: &str) -> Vec<Instruction> {
     let regex = Regex::new(r"mul\((\d{1,3}),(\d{1,3})\)").unwrap();
 
     let mut operations = Vec::new();
     for cap in regex.captures_iter(source_code) {
         if let (Ok(lhs), Ok(rhs)) = (cap[1].parse::<i32>(), cap[2].parse::<i32>()) {
-            operations.push(Multiply::new(lhs, rhs));
+            operations.push(Instruction::Mul(lhs, rhs));
         }
     }
     operations
 }
 
-fn compile_with_reenabling_feature(source_code: &str) -> Vec<Multiply> {
+fn compile_with_reenabling_feature(source_code: &str) -> Vec<Instruction> {
     let regex = Regex::new(r"(mul)\((\d{1,3}),(\d{1,3})\)|(don't)\(\)|(do)\(\)").unwrap();
 
     let mut operations = Vec::new();
@@ -47,7 +36,7 @@ fn compile_with_reenabling_feature(source_code: &str) -> Vec<Multiply> {
             if !skip {
                 let lhs = cap[2].parse::<i32>().unwrap();
                 let rhs = cap[3].parse::<i32>().unwrap();
-                operations.push(Multiply::new(lhs, rhs));
+                operations.push(Instruction::Mul(lhs, rhs));
             }
         } else if let Some(_) = cap.get(4) {
             skip = true;
@@ -58,8 +47,13 @@ fn compile_with_reenabling_feature(source_code: &str) -> Vec<Multiply> {
     operations
 }
 
-fn execute(operations: Vec<Multiply>) -> i32 {
-    operations.iter().map(Multiply::multiply).sum()
+fn execute(operations: Vec<Instruction>) -> i32 {
+    operations
+        .iter()
+        .map(|instruction| match instruction {
+            Instruction::Mul(lhs, rhs) => lhs * rhs,
+        })
+        .sum()
 }
 
 fn main() -> io::Result<()> {
