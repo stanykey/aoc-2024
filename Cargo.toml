@@ -17,3 +17,7 @@ path = "src/day-2/red-nosed-reports.rs"
 [[bin]]
 name = "mull-it-over"
 path = "src/day-3/mull-it-over.rs"
+
+[[bin]]
+name = "ceres-search"
+path = "src/day-4/ceres-search.rs"
