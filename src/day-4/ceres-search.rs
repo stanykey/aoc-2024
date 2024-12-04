@@ -36,9 +36,7 @@ fn check_word(
     true
 }
 
-fn count_word(word_search: Vec<String>, word: &str) -> usize {
-    let rows = word_search.len();
-    let cols = word_search[0].len();
+fn count_word(word_search: &Vec<String>, word: &str) -> usize {
     let mut count = 0;
 
     let directions = vec![
@@ -53,10 +51,42 @@ fn count_word(word_search: Vec<String>, word: &str) -> usize {
     ];
 
     // Iterate over every cell in the grid
+    let rows = word_search.len();
+    let cols = word_search[0].len();
     for row in 0..rows {
         for col in 0..cols {
             for &dir in &directions {
                 if check_word(&word_search, word, row as isize, col as isize, dir) {
+                    count += 1;
+                }
+            }
+        }
+    }
+
+    count
+}
+
+fn count_xmas_patterns(word_search: &Vec<String>) -> usize {
+    let mut count = 0;
+
+    let rows = word_search.len();
+    let cols = word_search[0].len();
+    for row in 1..rows - 1 {
+        for col in 1..cols - 1 {
+            if word_search[row].chars().nth(col).unwrap() == 'A' {
+                let prev_row = row as isize - 1;
+                let prev_col = col as isize - 1;
+                let next_col = col as isize + 1;
+
+                let top_left_to_bottom_right =
+                    check_word(word_search, "MAS", prev_row, prev_col, (1, 1))
+                        || check_word(word_search, "SAM", prev_row, prev_col, (1, 1));
+
+                let top_right_to_bottom_left =
+                    check_word(word_search, "MAS", prev_row, next_col, (1, -1))
+                        || check_word(word_search, "SAM", prev_row, next_col, (1, -1));
+
+                if top_left_to_bottom_right && top_right_to_bottom_left {
                     count += 1;
                 }
             }
@@ -72,8 +102,11 @@ fn main() -> io::Result<()> {
     // println!("{:?}", word_search);
 
     let word = "XMAS";
-    let word_count = count_word(word_search, word);
+    let word_count = count_word(&word_search, word);
     println!("The {} appears {} times", word, word_count);
+
+    let xmas_pattern_count = count_xmas_patterns(&word_search);
+    println!("The 'x-max' appears {} times", xmas_pattern_count);
 
     Ok(())
 }
