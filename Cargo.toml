@@ -21,3 +21,7 @@ path = "src/day-3/mull-it-over.rs"
 [[bin]]
 name = "ceres-search"
 path = "src/day-4/ceres-search.rs"
+
+[[bin]]
+name = "print-queue"
+path = "src/day-5/print-queue.rs"

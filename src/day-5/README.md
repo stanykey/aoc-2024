@@ -102,3 +102,7 @@ above example.
 
 Determine which updates are already in the correct order. **What do you get if you add up the middle page number from
 those correctly-ordered updates?**
+
+Your puzzle answer was `5275`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
