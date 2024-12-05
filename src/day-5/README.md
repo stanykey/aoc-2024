@@ -123,3 +123,7 @@ After taking **only the incorrectly-ordered updates** and ordering them correctl
 
 Find the updates which are not in the correct order. **What do you get if you add up the middle page numbers after
 correctly ordering just those updates?**
+
+Your puzzle answer was `6191`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*

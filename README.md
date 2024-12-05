@@ -9,7 +9,7 @@ Language of choice: `Rust`
 - [x] Day 2: Red-Nosed Reports
 - [x] Day 3: Mull It Over
 - [x] Day 4: Ceres Search
-- [ ] Day 5: Print Queue
+- [x] Day 5: Print Queue
 - [ ] Day 6
 - [ ] Day 7
 - [ ] Day 8
