@@ -115,3 +115,7 @@ an `X`:
 In this example, the guard will visit **41** distinct positions on your map.
 
 Predict the path of the guard. **How many distinct positions will the guard visit before leaving the mapped area?**
+
+Your puzzle answer was `5131`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*

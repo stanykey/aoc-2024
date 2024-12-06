@@ -25,3 +25,7 @@ path = "src/day-4/ceres-search.rs"
 [[bin]]
 name = "print-queue"
 path = "src/day-5/print-queue.rs"
+
+[[bin]]
+name = "guard-gallivant"
+path = "src/day-6/guard-gallivant.rs"
