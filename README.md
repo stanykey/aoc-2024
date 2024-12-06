@@ -10,7 +10,7 @@ Language of choice: `Rust`
 - [x] Day 3: Mull It Over
 - [x] Day 4: Ceres Search
 - [x] Day 5: Print Queue
-- [ ] Day 6: Guard Gallivant
+- [x] Day 6: Guard Gallivant
 - [ ] Day 7
 - [ ] Day 8
 - [ ] Day 9
