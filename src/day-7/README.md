@@ -72,3 +72,7 @@ made by also using `||`) produces the new **total calibration result** of **1138
 
 Using your new knowledge of elephant hiding spots, determine which equations could possibly be true. **What is their
 total calibration result?**
+
+Your puzzle answer was `145149066755184`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*

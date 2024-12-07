@@ -1,6 +1,34 @@
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
+use std::time::Instant;
+
+/// Enum for supported operators
+#[derive(Debug, Clone, Copy)]
+enum Operator {
+    Add,
+    Multiply,
+    Concatenate,
+}
+
+impl Operator {
+    /// Parse a character into an `Operator`
+    fn from_char(c: char) -> Option<Operator> {
+        match c {
+            '+' => Some(Operator::Add),
+            '*' => Some(Operator::Multiply),
+            '|' => Some(Operator::Concatenate),
+            _ => None,
+        }
+    }
+
+    fn make_operator_list(operators: &str) -> Vec<Operator> {
+        operators
+            .chars()
+            .filter_map(Operator::from_char) // Convert each character to an Operator
+            .collect()
+    }
+}
 
 #[derive(Debug)]
 struct Equation {
@@ -36,25 +64,31 @@ impl Equation {
         Equation { value, operands }
     }
 
-    fn validate(&self) -> bool {
+    fn validate(&self, operators: &[Operator]) -> bool {
         let num_operators = self.operands.len() - 1;
-        let mut combinations = (0..2_usize.pow(num_operators as u32)).map(|bitmask| {
+
+        // Generate all possible operator combinations
+        let mut combinations = (0..operators.len().pow(num_operators as u32)).map(|bitmask| {
             (0..num_operators)
-                .map(|i| if (bitmask & (1 << i)) != 0 { '*' } else { '+' })
-                .collect::<Vec<char>>()
+                .map(|i| operators[(bitmask / operators.len().pow(i as u32)) % operators.len()])
+                .collect::<Vec<Operator>>()
         });
 
         combinations.any(|ops| self.evaluate(&ops) == self.value)
     }
 
-    fn evaluate(&self, operators: &[char]) -> usize {
+    fn evaluate(&self, operators: &[Operator]) -> usize {
         let mut result = self.operands[0];
 
         for (i, &operator) in operators.iter().enumerate() {
             match operator {
-                '+' => result += self.operands[i + 1],
-                '*' => result *= self.operands[i + 1],
-                _ => panic!("Unsupported operator"),
+                Operator::Add => result += self.operands[i + 1],
+                Operator::Multiply => result *= self.operands[i + 1],
+                Operator::Concatenate => {
+                    let rhs = self.operands[i + 1];
+                    let rhs_digit_count = (rhs as f64).log10().floor() as u32 + 1;
+                    result = (result * 10_usize.pow(rhs_digit_count)) + self.operands[i + 1];
+                }
             }
         }
 
@@ -73,10 +107,10 @@ fn load_calibration_equations(file_path: &Path) -> io::Result<Vec<Equation>> {
         .collect()
 }
 
-fn get_calibration_equations(equations: &Vec<Equation>) -> usize {
+fn get_calibration_equations(equations: &Vec<Equation>, operators: &[Operator]) -> usize {
     equations
         .iter()
-        .filter(|equation| equation.validate())
+        .filter(|equation| equation.validate(operators))
         .map(|equation| equation.value)
         .sum()
 }
@@ -84,8 +118,18 @@ fn get_calibration_equations(equations: &Vec<Equation>) -> usize {
 fn main() -> io::Result<()> {
     let file_path = Path::new("input.data");
     let calibration_equations = load_calibration_equations(file_path)?;
-    let calibration_value = get_calibration_equations(&calibration_equations);
-    println!("Calibration value: {}", calibration_value);
+
+    let timer = Instant::now();
+    let basic_operators = Operator::make_operator_list("+*");
+    let calibration_value = get_calibration_equations(&calibration_equations, &basic_operators);
+    println!("Calibration value (+*): {}", calibration_value);
+    println!("Time elapsed: {:?}", timer.elapsed());
+
+    let timer = Instant::now();
+    let extended_operators = Operator::make_operator_list("+*|");
+    let calibration_value = get_calibration_equations(&calibration_equations, &extended_operators);
+    println!("Calibration value (+*|): {}", calibration_value);
+    println!("Time elapsed: {:?}", timer.elapsed());
 
     Ok(())
 }
