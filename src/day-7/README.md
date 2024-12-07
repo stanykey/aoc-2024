@@ -46,3 +46,7 @@ that could possibly be true. In the above example, the sum of the test values fo
 *3749**.
 
 Determine which equations could possibly be true. **What is their total calibration result?**
+
+Your puzzle answer was `882304362421`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
