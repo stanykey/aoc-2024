@@ -33,3 +33,7 @@ path = "src/day-6/guard-gallivant.rs"
 [[bin]]
 name = "bridge-repair"
 path = "src/day-7/bridge-repair.rs"
+
+[[bin]]
+name = "resonant-collinearity"
+path = "src/day-8/resonant-collinearity.rs"

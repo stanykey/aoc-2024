@@ -12,7 +12,7 @@ Language of choice: `Rust`
 - [x] Day 5: Print Queue
 - [x] Day 6: Guard Gallivant
 - [x] Day 7: Bridge Repair
-- [ ] Day 8
+- [ ] Day 8: Resonant Collinearity
 - [ ] Day 9
 - [ ] Day 10
 - [ ] Day 11

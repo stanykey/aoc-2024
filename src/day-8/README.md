@@ -100,3 +100,7 @@ Because the topmost `A`-frequency antenna overlaps with a `0`-frequency antinode
 locations that contain an antinode within the bounds of the map.
 
 Calculate the impact of the signal. **How many unique locations within the bounds of the map contain an antinode?**
+
+Your puzzle answer was `249`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
