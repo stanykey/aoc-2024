@@ -37,3 +37,7 @@ path = "src/day-7/bridge-repair.rs"
 [[bin]]
 name = "resonant-collinearity"
 path = "src/day-8/resonant-collinearity.rs"
+
+[[bin]]
+name = "disk-fragmenter"
+path = "src/day-9/disk-fragmenter.rs"
