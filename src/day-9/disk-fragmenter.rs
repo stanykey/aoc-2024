@@ -1,143 +1,189 @@
-use std::fs;
-use std::io;
-use std::path::Path;
+use std::time::Instant;
+use std::{io, num::ParseIntError, str::FromStr};
 
-#[derive(Debug, Clone)]
-struct Sector {
-    file_id: usize,
-    file_size: u64,
-    free_space: u64,
+#[derive(Debug, Clone, Copy)]
+struct Block {
+    id: u64,
+    used: u64,
+    free: u64,
 }
 
-fn load_disc_map(file_path: &Path) -> io::Result<String> {
-    let result = fs::read_to_string(file_path);
-    match result {
-        Ok(text) => Ok(text.trim().to_string()),
-        Err(e) => Err(e),
+#[derive(Debug)]
+struct Disk {
+    blocks: Vec<Block>,
+}
+
+impl FromStr for Disk {
+    type Err = ParseIntError;
+
+    fn from_str(puzzle: &str) -> Result<Self, Self::Err> {
+        let blocks = puzzle
+            .trim()
+            .chars()
+            .collect::<Vec<char>>()
+            .chunks(2)
+            .enumerate()
+            .map(|(id, chunk)| {
+                let used = chunk[0].to_string().parse()?;
+                let free = chunk.get(1).unwrap_or(&'0').to_string().parse()?;
+                Ok(Block {
+                    id: id as u64,
+                    used,
+                    free,
+                })
+            })
+            .collect::<Result<Vec<_>, ParseIntError>>()?;
+
+        Ok(Disk { blocks })
     }
 }
 
-fn parse_disk_map(disk_map: &str) -> Vec<Sector> {
-    let mut sectors = Vec::new();
-    let mut is_file = true;
-    let mut file_id = 0;
+impl Disk {
+    fn compact_by_block_policy(&self) -> Self {
+        let mut compacted = self.blocks.clone();
 
-    let mut chars = disk_map.chars();
-    while let Some(c) = chars.next() {
-        let size = c.to_digit(10).unwrap() as u64;
+        let mut start = 0;
+        let mut end = compacted.len() - 1;
+        while start < end {
+            if compacted[start].free > 0 {
+                let free_space = compacted[start].free;
+                let move_amount = free_space.min(compacted[end].used);
 
-        if is_file {
-            sectors.push(Sector {
-                file_id,
-                file_size: size,
-                free_space: 0,
-            });
-            file_id += 1;
-        } else {
-            // Add free space to the previous sector
-            if let Some(last_sector) = sectors.last_mut() {
-                last_sector.free_space += size;
-            }
-        }
+                compacted[start].free = 0;
+                let mut new_sector = Block {
+                    id: compacted[end].id,
+                    used: move_amount,
+                    free: free_space - move_amount,
+                };
+                compacted[end].used -= move_amount;
 
-        is_file = !is_file;
-    }
-
-    sectors
-}
-
-fn compact_disk(sectors: &Vec<Sector>) -> Vec<Sector> {
-    let mut compacted = sectors.clone();
-
-    let mut start = 0;
-    let mut end = compacted.len() - 1;
-    while start < end {
-        if compacted[start].free_space > 0 {
-            let free_space = compacted[start].free_space;
-            let move_amount = free_space.min(compacted[end].file_size);
-
-            compacted[start].free_space = 0;
-            let mut new_sector = Sector {
-                file_id: compacted[end].file_id,
-                file_size: move_amount,
-                free_space: free_space - move_amount,
-            };
-            compacted[end].file_size -= move_amount;
-
-            if compacted[end].file_size == 0 {
-                let new_free_space = move_amount + compacted[end].free_space;
-                if end - 1 == start {
-                    new_sector.free_space += new_free_space;
+                if compacted[end].used == 0 {
+                    let new_free_space = move_amount + compacted[end].free;
+                    if end - 1 == start {
+                        new_sector.free += new_free_space;
+                    } else {
+                        compacted[end - 1].free += new_free_space;
+                    }
+                    compacted.remove(end);
                 } else {
-                    compacted[end - 1].free_space += new_free_space;
+                    compacted[end].free += move_amount;
                 }
-                compacted.remove(end);
-            } else {
-                compacted[end].free_space += move_amount;
+
+                compacted.insert(start + 1, new_sector);
+                end = compacted.len() - 1;
             }
 
-            compacted.insert(start + 1, new_sector);
-            end = compacted.len() - 1;
+            start += 1;
         }
 
-        start += 1;
+        Self { blocks: compacted }
     }
 
-    compacted
-}
+    fn compact_by_file_policy(&self) -> Self {
+        let mut optimized = self.blocks.clone();
 
-fn calculate_checksum(sectors: &Vec<Sector>) -> u64 {
-    let mut checksum = 0;
-    let mut position = 0;
+        let file_ids: Vec<u64> = optimized
+            .iter()
+            .skip(1) // we never move first file
+            .map(|sector| sector.id)
+            .rev()
+            .collect();
 
-    for sector in sectors {
-        if sector.file_size > 0 {
-            for block_offset in 0..sector.file_size {
-                checksum += (position + block_offset) as u64 * sector.file_id as u64;
+        for file_id in file_ids {
+            let file_index = optimized
+                .iter()
+                .position(|sector| sector.id == file_id)
+                .expect("file not found");
+
+            let file_size = optimized[file_index].used;
+
+            let fit_index = optimized
+                .iter()
+                .enumerate()
+                .find(|(index, sector)| index < &file_index && sector.free >= file_size)
+                .map(|(index, _)| index);
+
+            if let Some(target_index) = fit_index {
+                let free_space = optimized[target_index].free - file_size;
+                optimized[target_index].free = 0;
+
+                let mut new_block = Block {
+                    id: file_id,
+                    used: file_size,
+                    free: free_space,
+                };
+
+                let sector_free_space = optimized[file_index].free;
+                if file_index - 1 == target_index {
+                    new_block.free += file_size + sector_free_space
+                } else {
+                    optimized[file_index - 1].free += file_size + sector_free_space;
+                }
+
+                optimized.remove(file_index);
+                optimized.insert(target_index + 1, new_block);
             }
         }
 
-        position += sector.file_size + sector.free_space;
+        Self { blocks: optimized }
     }
 
-    checksum
-}
-
-fn find_filesystem_checksum(sectors: &Vec<Sector>) -> u64 {
-    let defragmented = compact_disk(sectors);
-    calculate_checksum(&defragmented)
+    fn calculate_checksum(&self) -> u64 {
+        let mut checksum = 0;
+        let mut position = 0;
+        for block in &self.blocks {
+            checksum += (position..position + block.used)
+                .map(|pos| pos * block.id)
+                .sum::<u64>();
+            position += block.used + block.free;
+        }
+        checksum
+    }
 }
 
 fn main() -> io::Result<()> {
-    let file_path = Path::new("input.data");
-    let disk_map = load_disc_map(file_path)?;
+    let puzzle_input = include_str!("input.data");
+    let disk = Disk::from_str(puzzle_input).expect("could not load disk map");
 
-    let sectors = parse_disk_map(&disk_map);
-    let checksum = find_filesystem_checksum(&sectors);
-    println!("Filesystem checksum: {}", checksum);
+    let timer = Instant::now();
+    let checksum = disk.compact_by_block_policy().calculate_checksum();
+    println!(
+        "Filesystem checksum after defragmentation by block policy is {}",
+        checksum
+    );
+    println!("Time elapsed: {:?}", timer.elapsed());
+
+    let timer = Instant::now();
+    let checksum = disk.compact_by_file_policy().calculate_checksum();
+    println!(
+        "Filesystem checksum after defragmentation by file policy is {}",
+        checksum
+    );
+    println!("Time elapsed: {:?}", timer.elapsed());
 
     Ok(())
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{calculate_checksum, compact_disk, parse_disk_map};
+    use crate::Disk;
+    use std::str::FromStr;
 
-    fn compact_and_calculate_checksum(disk_map: &str) -> u64 {
-        let blocks = parse_disk_map(disk_map);
-        let defragmented = compact_disk(&blocks);
-        calculate_checksum(&defragmented)
+    #[test]
+    fn test_example_defragmentation_by_blocks() {
+        let disk = Disk::from_str("2333133121414131402").expect("could not load disk map");
+        assert_eq!(disk.compact_by_block_policy().calculate_checksum(), 1928);
     }
 
     #[test]
-    fn test_example() {
-        let disk_map = "2333133121414131402";
-        assert_eq!(compact_and_calculate_checksum(disk_map), 1928);
+    fn test_simple_case_defragmentation_by_blocks() {
+        let disk = Disk::from_str("12345").expect("could not load disk map");
+        assert_eq!(disk.compact_by_block_policy().calculate_checksum(), 60);
     }
 
     #[test]
-    fn test_simple_case() {
-        let disk_map = "12345";
-        assert_eq!(compact_and_calculate_checksum(disk_map), 60);
+    fn test_example_defragmentation_by_files() {
+        let disk = Disk::from_str("2333133121414131402").expect("could not load disk map");
+        assert_eq!(disk.compact_by_file_policy().calculate_checksum(), 2858);
     }
 }

@@ -109,3 +109,7 @@ The process of updating the filesystem checksum is the same; now, this example's
 
 Start over, now compacting the amphipod's hard drive using this new method instead. **What is the resulting filesystem
 checksum?**
+
+Your puzzle answer was `6427437134372`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*
