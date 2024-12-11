@@ -68,3 +68,7 @@ In this example, after blinking six times, you would have `22` stones. After bli
 stones!
 
 Consider the arrangement of stones in front of you. **How many stones will you have after blinking 25 times?**
+
+Your puzzle answer was `189092`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*

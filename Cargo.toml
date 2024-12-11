@@ -45,3 +45,7 @@ path = "src/day-9/disk-fragmenter.rs"
 [[bin]]
 name = "hoof-it"
 path = "src/day-10/hoof-it.rs"
+
+[[bin]]
+name = "plutonian-pebbles"
+path = "src/day-11/plutonian-pebbles.rs"
