@@ -14,7 +14,7 @@ Language of choice: `Rust`
 - [x] Day 7: Bridge Repair
 - [x] Day 8: Resonant Collinearity
 - [x] Day 9: Disk Fragmenter
-- [ ] Day 10
+- [ ] Day 10: Hoof It
 - [ ] Day 11
 - [ ] Day 12
 - [ ] Day 13
