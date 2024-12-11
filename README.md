@@ -15,7 +15,7 @@ Language of choice: `Rust`
 - [x] Day 8: Resonant Collinearity
 - [x] Day 9: Disk Fragmenter
 - [x] Day 10: Hoof It
-- [ ] Day 11: Plutonian Pebbles
+- [x] Day 11: Plutonian Pebbles
 - [ ] Day 12
 - [ ] Day 13
 - [ ] Day 14
