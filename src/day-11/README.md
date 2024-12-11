@@ -72,3 +72,8 @@ Consider the arrangement of stones in front of you. **How many stones will you h
 Your puzzle answer was `189092`.
 
 *__The first half of this puzzle is complete! It provides one gold star: *__*
+
+## Part Two
+The Historians sure are taking a long time. To be fair, the infinite corridors **are** very large.
+
+**How many stones would you have after blinking a total of 75 times?**
