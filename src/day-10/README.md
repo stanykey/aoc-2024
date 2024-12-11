@@ -170,3 +170,7 @@ The sum of all trailhead ratings in this larger example topographic map is **81*
 
 You're not sure how, but the reindeer seems to have crafted some tiny flags out of toothpicks and bits of paper and is
 using them to mark trailheads on your topographic map. **What is the sum of the ratings of all trailheads?**
+
+Your puzzle answer was `1706`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*
