@@ -1,109 +1,208 @@
-use std::collections::{HashSet, VecDeque};
+use std::collections::{HashMap, HashSet, VecDeque};
+use std::fmt::Display;
+use std::ops::Add;
 use std::str::FromStr;
 
-#[derive(Debug)]
-struct Group {
-    label: char,
-    squares: Vec<(usize, usize)>,
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+struct Plot {
+    row: isize,
+    col: isize,
 }
 
-impl Group {
-    fn perimeter(&self) -> usize {
-        let squares: HashSet<_> = self.squares.iter().cloned().collect();
-        let mut perimeter = 0;
+static NEIGHBORS: [Plot; 4] = [
+    Plot { row: 0, col: -1 }, // left
+    Plot { row: 0, col: 1 },  // right
+    Plot { row: 1, col: 0 },  // down
+    Plot { row: -1, col: 0 }, // up
+];
 
-        for &(y, x) in &self.squares {
-            for (dy, dx) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
-                let neighbor = ((y as isize + dy) as usize, (x as isize + dx) as usize);
-                if !squares.contains(&neighbor) {
-                    perimeter += 1;
-                }
-            }
+static CORNERS: [[Plot; 3]; 4] = [
+    [
+        Plot { col: -1, row: -1 },
+        Plot { col: -1, row: 0 },
+        Plot { col: 0, row: -1 },
+    ],
+    [
+        Plot { col: 1, row: -1 },
+        Plot { col: 1, row: 0 },
+        Plot { col: 0, row: -1 },
+    ],
+    [
+        Plot { col: 1, row: 1 },
+        Plot { col: 1, row: 0 },
+        Plot { col: 0, row: 1 },
+    ],
+    [
+        Plot { col: -1, row: 1 },
+        Plot { col: -1, row: 0 },
+        Plot { col: 0, row: 1 },
+    ],
+];
+
+impl Plot {
+    fn new(row: usize, col: usize) -> Self {
+        Plot {
+            row: row as isize,
+            col: col as isize,
         }
-
-        perimeter
     }
+}
 
+impl Display for Plot {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.row, self.col)
+    }
+}
+
+impl Add for Plot {
+    type Output = Plot;
+
+    fn add(self, other: Plot) -> Plot {
+        Plot {
+            row: self.row + other.row,
+            col: self.col + other.col,
+        }
+    }
+}
+
+struct Region {
+    plant: char,
+    plots: HashSet<Plot>,
+}
+
+impl Region {
     fn area(&self) -> usize {
-        self.squares.len()
+        self.plots.len()
     }
+}
 
-    fn price(&self) -> usize {
-        self.perimeter() * self.area()
+impl Display for Region {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let plots: Vec<String> = self.plots.iter().map(|plot| format!("{plot}")).collect();
+        write!(
+            f,
+            "Region {{ plant: '{}', plots: [{}] }}",
+            self.plant,
+            plots.join(", ")
+        )
     }
 }
 
 #[derive(Debug)]
 struct Garden {
-    groups: Vec<Group>,
-}
-
-impl Default for Garden {
-    fn default() -> Garden {
-        Self {
-            groups: Vec::default(),
-        }
-    }
+    plots: HashMap<Plot, char>,
 }
 
 impl FromStr for Garden {
     type Err = String;
     fn from_str(garden_map: &str) -> Result<Self, Self::Err> {
-        let map: Vec<Vec<char>> = garden_map
+        let plots = garden_map
             .lines()
-            .map(|line| line.chars().collect())
+            .enumerate()
+            .flat_map(|(row, line)| {
+                line.chars()
+                    .enumerate()
+                    .map(move |(col, plant)| (Plot::new(row, col), plant))
+            })
             .collect();
-        Ok(Garden::create(map))
+        Ok(Garden { plots })
     }
 }
 
 impl Garden {
-    fn create(map: Vec<Vec<char>>) -> Garden {
-        let mut groups = Vec::new();
+    fn get_regions(&self) -> Vec<Region> {
+        let mut regions = Vec::new();
 
-        let rows = map.len();
-        let cols = map[0].len();
-        let directions = [(-1, 0), (1, 0), (0, -1), (0, 1)];
-        let mut visited = vec![vec![false; cols]; rows];
-        for y in 0..rows {
-            for x in 0..cols {
-                if !visited[y][x] {
-                    let label = map[y][x];
-                    let mut squares = Vec::new();
-                    let mut queue = VecDeque::new();
+        let mut visited: HashSet<Plot> = HashSet::new();
+        for plot in self.plots.keys() {
+            if visited.contains(plot) {
+                continue;
+            }
 
-                    queue.push_back((y, x));
-                    visited[y][x] = true;
-                    while let Some((row, col)) = queue.pop_front() {
-                        squares.push((row, col));
+            regions.push(self.get_region(plot, &mut visited));
+        }
 
-                        for &(dy, dx) in &directions {
-                            let ny = row as isize + dy;
-                            let nx = col as isize + dx;
+        regions
+    }
 
-                            if ny >= 0
-                                && ny < rows as isize
-                                && nx >= 0
-                                && nx < cols as isize
-                                && !visited[ny as usize][nx as usize]
-                                && map[ny as usize][nx as usize] == label
-                            {
-                                queue.push_back((ny as usize, nx as usize));
-                                visited[ny as usize][nx as usize] = true;
-                            }
-                        }
-                    }
+    fn get_region(&self, start: &Plot, visited: &mut HashSet<Plot>) -> Region {
+        let region_plant = self.plots[&start];
+        let mut region_plots = HashSet::new();
 
-                    groups.push(Group { label, squares });
-                }
+        let mut stack = VecDeque::new();
+        stack.push_back(*start);
+        while let Some(plot) = stack.pop_front() {
+            if visited.contains(&plot) || self.plots[&plot] != region_plant {
+                continue;
+            }
+            visited.insert(plot);
+            region_plots.insert(plot);
+
+            for neighbor in self.neighbors(&plot) {
+                stack.push_back(neighbor);
             }
         }
 
-        Garden { groups }
+        Region {
+            plant: region_plant,
+            plots: region_plots,
+        }
     }
 
-    fn total_price(&self) -> usize {
-        self.groups.iter().map(|group| group.price()).sum()
+    fn neighbors(&self, plot: &Plot) -> Vec<Plot> {
+        NEIGHBORS
+            .iter()
+            .map(|dir| *plot + *dir)
+            .filter(|neighbor| self.plots.contains_key(neighbor))
+            .collect()
+    }
+
+    fn perimeter(&self, region: &Region) -> usize {
+        region
+            .plots
+            .iter()
+            .map(|plot| {
+                4 - self
+                    .neighbors(plot)
+                    .iter()
+                    .filter(|neighbor| self.plots[neighbor] == self.plots[plot])
+                    .count()
+            })
+            .sum::<usize>()
+    }
+
+    fn corners(&self, region: &Region) -> usize {
+        region
+            .plots
+            .iter()
+            .map(|plot| {
+                CORNERS
+                    .iter()
+                    .filter(|corner| {
+                        let opposite = self.plots.get(&(*plot + corner[0]));
+                        let first = self.plots.get(&(*plot + corner[1]));
+                        let second = self.plots.get(&(*plot + corner[2]));
+                        let plot_char = self.plots.get(plot);
+                        (plot_char != second && plot_char != first)
+                            || (plot_char == second && plot_char == first && plot_char != opposite)
+                    })
+                    .count()
+            })
+            .sum::<usize>()
+    }
+
+    fn calculate_price_by_perimeter_policy(&self) -> usize {
+        self.get_regions()
+            .iter()
+            .map(|region| self.perimeter(region) * region.area())
+            .sum()
+    }
+
+    fn calculate_price_by_sides_policy(&self) -> usize {
+        self.get_regions()
+            .iter()
+            .map(|region| self.corners(&region) * region.area())
+            .sum()
     }
 }
 
@@ -111,14 +210,22 @@ fn main() {
     let puzzle_input = include_str!("input.data");
     let garden = Garden::from_str(puzzle_input).expect("Failed to parse garden map");
 
-    for group in &garden.groups {
-        println!(
-            "A region of {} plants with price {} * {} = {}",
-            group.label,
-            group.area(),
-            group.perimeter(),
-            group.price()
-        );
-    }
-    println!("Total garden price is {}", garden.total_price());
+    // let regions = garden.get_regions();
+    // for region in &regions {
+    //     println!("{region:}");
+    // }
+
+    let timer = std::time::Instant::now();
+    println!(
+        "Total garden price (by perimeter) is {}",
+        garden.calculate_price_by_perimeter_policy()
+    );
+    println!("Time elapsed: {:?}", timer.elapsed());
+
+    let timer = std::time::Instant::now();
+    println!(
+        "Total garden price (by sides) is {}",
+        garden.calculate_price_by_sides_policy()
+    );
+    println!("Time elapsed: {:?}", timer.elapsed());
 }

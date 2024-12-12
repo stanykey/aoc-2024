@@ -16,7 +16,7 @@ Language of choice: `Rust`
 - [x] Day 9: Disk Fragmenter
 - [x] Day 10: Hoof It
 - [x] Day 11: Plutonian Pebbles
-- [ ] Day 12: Garden Groups
+- [x] Day 12: Garden Groups
 - [ ] Day 13
 - [ ] Day 14
 - [ ] Day 15
