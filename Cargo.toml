@@ -49,3 +49,7 @@ path = "src/day-10/hoof-it.rs"
 [[bin]]
 name = "plutonian-pebbles"
 path = "src/day-11/plutonian-pebbles.rs"
+
+[[bin]]
+name = "garden-groups"
+path = "src/day-12/garden-groups.rs"

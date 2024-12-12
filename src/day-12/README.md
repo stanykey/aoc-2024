@@ -114,3 +114,7 @@ It contains:
 So, it has a total price of **1930**.
 
 **What is the total price of fencing all regions on your map?**
+
+Your puzzle answer was `1344578`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
