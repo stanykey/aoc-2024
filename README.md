@@ -17,7 +17,7 @@ Language of choice: `Rust`
 - [x] Day 10: Hoof It
 - [x] Day 11: Plutonian Pebbles
 - [x] Day 12: Garden Groups
-- [ ] Day 13
+- [ ] Day 13: Claw Contraption
 - [ ] Day 14
 - [ ] Day 15
 - [ ] Day 16

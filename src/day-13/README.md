@@ -65,3 +65,7 @@ be expected to play?
 
 Figure out how to win as many prizes as possible. **What is the fewest tokens you would have to spend to win all
 possible prizes?**
+
+Your puzzle answer was `32067`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
