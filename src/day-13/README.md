@@ -102,3 +102,7 @@ than 100 presses** to do so.
 
 Using the corrected prize coordinates, figure out how to win as many prizes as possible. **What is the fewest tokens you
 would have to spend to win all possible prizes?**
+
+Your puzzle answer was `92871736253789`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*
