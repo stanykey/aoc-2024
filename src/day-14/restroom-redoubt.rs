@@ -1,8 +1,9 @@
+use num::Integer;
 use std::fmt::Display;
 use std::ops::Add;
 use std::str::FromStr;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 struct Point {
     x: i32,
     y: i32,
@@ -182,14 +183,46 @@ fn main() {
     // let height = 7;
     // let room = Room::parse(width, height, puzzle_input.trim()).expect("Failed to parse room data");
 
-    let width = 101;
-    let height = 103;
-    let room = Room::parse(width, height, puzzle_input.trim()).expect("Failed to parse room data");
+    let room_width = 101;
+    let room_height = 103;
+    let room = Room::parse(room_width, room_height, puzzle_input.trim())
+        .expect("Failed to parse room data");
 
     let timer = std::time::Instant::now();
     let new_room = room.simulate(100);
     let safety_factor = new_room.get_safety_factor();
     // new_room.print_state();
     println!("The safety factor after 100 seconds is {safety_factor}",);
+    println!("Time elapsed: {:?}", timer.elapsed());
+
+    let timer = std::time::Instant::now();
+    // kudos to icub3d (https://www.youtube.com/@icub3d) and google.com (^_^)
+    // When does each robot end up back where it started?
+    let cycles = room
+        .robots
+        .iter()
+        .map(|robot| {
+            let mut clone = robot.clone();
+            let mut steps = 0;
+            loop {
+                clone.step(1, room_width, room_height);
+                steps += 1;
+                if clone.position == robot.position {
+                    break steps;
+                }
+            }
+        })
+        .collect::<Vec<usize>>();
+
+    // We can find the least common multiple of all cycles to find
+    // the maximum number of steps we'll need to pre-compute.
+    let lcm = cycles.iter().fold(cycles[0], |acc, x| acc.lcm(x));
+    let seconds_required = (0..lcm)
+        .map(|step_count| room.clone().simulate(step_count).get_safety_factor())
+        .enumerate()
+        .min_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap())
+        .unwrap()
+        .0;
+    println!("Robots need {} seconds to form a tree", seconds_required);
     println!("Time elapsed: {:?}", timer.elapsed());
 }

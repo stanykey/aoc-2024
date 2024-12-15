@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 regex = "1.11.1"
+num = "0.4.3"
 
 [[bin]]
 name = "historian-hysteria"
