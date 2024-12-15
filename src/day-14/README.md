@@ -145,3 +145,7 @@ factor** of **12**.
 
 Predict the motion of the robots in your list within a space which is `101` tiles wide and `103` tiles tall. **What will
 the safety factor be after exactly 100 seconds have elapsed?**
+
+Your puzzle answer was `224357412`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*

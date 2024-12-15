@@ -57,3 +57,7 @@ path = "src/day-12/garden-groups.rs"
 [[bin]]
 name = "claw-contraption"
 path = "src/day-13/claw-contraption.rs"
+
+[[bin]]
+name = "restroom-redoubt"
+path = "src/day-14/restroom-redoubt.rs"

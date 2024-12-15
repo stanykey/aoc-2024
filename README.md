@@ -18,7 +18,7 @@ Language of choice: `Rust`
 - [x] Day 11: Plutonian Pebbles
 - [x] Day 12: Garden Groups
 - [x] Day 13: Claw Contraption
-- [ ] Day 14
+- [ ] Day 14: Restroom Redoubt
 - [ ] Day 15
 - [ ] Day 16
 - [ ] Day 17
