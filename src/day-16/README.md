@@ -159,3 +159,7 @@ In the second example, there are **64** tiles that are part of at least one of t
 ```
 
 Analyze your map further. **How many tiles are part of at least one of the best paths through the maze?**
+
+Your puzzle answer was `545`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*

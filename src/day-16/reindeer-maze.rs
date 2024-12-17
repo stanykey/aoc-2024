@@ -1,3 +1,4 @@
+use itertools::Itertools;
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
 use std::collections::HashMap;
@@ -85,7 +86,6 @@ impl Point {
         .into_iter()
         .filter(|d| *d != direction.opposite())
         .map(|d| {
-            // The cost is 1 if the same direction is maintained, 1001 otherwise.
             let cost = if direction != d { 1001 } else { 1 };
             (d.make_step(self), d, cost)
         })
@@ -107,7 +107,6 @@ impl FromStr for Maze {
         let mut start = Point { x: 0, y: 0 };
         let mut end = Point { x: 0, y: 0 };
 
-        // Add all the nodes and find the start and end points.
         for (y, line) in input.lines().enumerate() {
             for (x, c) in line.chars().enumerate() {
                 if c == 'S' {
@@ -115,6 +114,7 @@ impl FromStr for Maze {
                 } else if c == 'E' {
                     end = Point { x, y };
                 }
+
                 if c != '#' {
                     nodes.insert(Point { x, y });
                 }
@@ -190,6 +190,10 @@ fn main() {
     let input = include_str!("input.data");
 
     let map = Maze::from_str(input).unwrap();
-    let (shortest_length, _paths) = map.shortest_paths();
+    let (shortest_length, paths) = map.shortest_paths();
     println!("The lowest possible score is {}", shortest_length);
+    println!(
+        "The number of tiles part of at least one best path is {}",
+        paths.iter().flatten().unique().count()
+    );
 }

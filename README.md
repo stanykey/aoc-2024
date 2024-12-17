@@ -21,7 +21,7 @@ Language of choice: `Rust`
 - [x] Day 13: Claw Contraption
 - [x] Day 14: Restroom Redoubt
 - [x] Day 15: Warehouse Woes
-- [ ] Day 16: Reindeer Maze
+- [x] Day 16: Reindeer Maze
 - [ ] Day 17
 - [ ] Day 18
 - [ ] Day 19
