@@ -67,3 +67,7 @@ path = "src/day-14/restroom-redoubt.rs"
 [[bin]]
 name = "warehouse-woes"
 path = "src/day-15/warehouse-woes.rs"
+
+[[bin]]
+name = "reindeer-maze"
+path = "src/day-16/reindeer-maze.rs"

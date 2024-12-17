@@ -99,3 +99,7 @@ Note that the path shown above includes one 90 degree turn as the very first mov
 East to facing North.
 
 Analyze your map carefully. **What is the lowest score a Reindeer could possibly get?**
+
+Your puzzle answer was `104516`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
