@@ -92,3 +92,7 @@ produced by `out` instructions with commas.) After the above program halts, its 
 
 Using the information provided by the debugger, initialize the registers to the given values, then run the program. Once
 it halts, **what do you get if you use commas to join the values it output into a single string?**
+
+Your puzzle answer was `7,6,5,3,6,5,7,0,4`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*

@@ -22,7 +22,7 @@ Language of choice: `Rust`
 - [x] Day 14: Restroom Redoubt
 - [x] Day 15: Warehouse Woes
 - [x] Day 16: Reindeer Maze
-- [ ] Day 17
+- [ ] Day 17: Chronospatial Computer
 - [ ] Day 18
 - [ ] Day 19
 - [ ] Day 20
