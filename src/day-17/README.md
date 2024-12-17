@@ -118,3 +118,7 @@ This program outputs a copy of itself if register `A` is instead initialized to 
 of register `A`, `2024`, is ignored.)
 
 **What is the lowest positive initial value for register A that causes the program to output a copy of itself?**
+
+Your puzzle answer was `190615597431823`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*
