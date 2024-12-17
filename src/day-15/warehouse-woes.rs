@@ -58,6 +58,28 @@ impl FromStr for Warehouse {
 }
 
 impl Warehouse {
+    fn rescale_map(&mut self) {
+        let mut new_map = vec![];
+
+        for row in &self.map {
+            let mut new_row = vec![];
+            for &tile in row {
+                match tile {
+                    '#' => new_row.extend(vec!['#', '#']),
+                    'O' => new_row.extend(vec!['[', ']']),
+                    '.' => new_row.extend(vec!['.', '.']),
+                    '@' => new_row.extend(vec!['@', '.']),
+                    _ => new_row.extend(vec![tile, tile]),
+                }
+            }
+            new_map.push(new_row);
+        }
+
+        self.map = new_map;
+        // Adjust robot's position to account for the doubled width
+        self.robot = (self.robot.0 * 2, self.robot.1);
+    }
+
     fn apply_all(&mut self, instructions: &[Instruction]) {
         instructions.iter().for_each(|instruction| {
             self.apply_single(instruction);
@@ -106,16 +128,43 @@ impl Warehouse {
     ) -> Option<Vec<(usize, usize)>> {
         let (new_x, new_y) = instruction.apply(x, y);
 
-        match self.map[new_y][new_x] {
-            '#' => None,               // blocked
-            '.' => Some(vec![(x, y)]), // valid move, stop here
-            _ => {
-                // recursive case: keep moving
-                let mut all_moves = self.can_move(new_x, new_y, instruction)?;
-                all_moves.push((x, y));
-                Some(all_moves)
+        let box_start_pos = match (self.map[y][x], instruction) {
+            ('[', Instruction::Up | Instruction::Down) => Some((x + 1, y)), // Right partner
+            (']', Instruction::Up | Instruction::Down) => Some((x - 1, y)), // Left partner
+            _ => None,
+        };
+
+        let box_end_pos = box_start_pos.map(|(x, y)| instruction.apply(x, y));
+
+        match (self.map[new_y][new_x], box_start_pos, box_end_pos) {
+            ('#', _, _) => return None,
+            (_, _, Some((x, y))) if self.map[y][x] == '#' => return None,
+            ('.', None, None) => return Some(vec![(x, y)]),
+            ('.', Some((other_x, other_y)), Some((other_new_x, other_new_y)))
+                if self.map[other_new_y][other_new_x] == '.' =>
+            {
+                return Some(vec![(x, y), (other_x, other_y)]);
+            }
+            _ => (),
+        }
+
+        let mut all_moves = vec![];
+        if self.map[new_y][new_x] != '.' {
+            all_moves.extend(self.can_move(new_x, new_y, instruction)?);
+        }
+
+        if let Some((other_new_x, other_new_y)) = box_end_pos {
+            if self.map[other_new_y][other_new_x] != '.' {
+                all_moves.extend(self.can_move(other_new_x, other_new_y, instruction)?);
             }
         }
+
+        all_moves.push((x, y));
+        if let Some((other_x, other_y)) = box_start_pos {
+            all_moves.push((other_x, other_y));
+        }
+
+        Some(all_moves)
     }
 
     fn gps(&self) -> Vec<(usize, usize)> {
@@ -125,10 +174,14 @@ impl Warehouse {
             .flat_map(|(y, line)| {
                 line.iter()
                     .enumerate()
-                    .filter(|&(_, symbol)| *symbol == 'O')
+                    .filter(|&(_, symbol)| *symbol == 'O' || *symbol == '[')
                     .map(move |(x, _)| (x, y))
             })
             .collect()
+    }
+
+    fn gps_score(&self) -> usize {
+        self.gps().iter().map(|(x, y)| y * 100 + x).sum()
     }
 }
 
@@ -143,13 +196,13 @@ fn main() {
         .map(Instruction::from)
         .collect();
 
+    // part 1
     warehouse.apply_all(&instructions);
-    println!(
-        "The value for gps cordinates: {}",
-        warehouse
-            .gps()
-            .iter()
-            .map(|(x, y)| y * 100 + x)
-            .sum::<usize>()
-    );
+    println!("Part 1 - GPS sum: {}", warehouse.gps_score());
+
+    // part 2
+    let mut warehouse = Warehouse::from_str(map).expect("Failed to parse map");
+    warehouse.rescale_map();
+    warehouse.apply_all(&instructions);
+    println!("Part 2 - GPS sum: {}", warehouse.gps_score());
 }
