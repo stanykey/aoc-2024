@@ -268,3 +268,7 @@ larger example, the sum of all boxes' GPS coordinates is **10092**. In the small
 
 Predict the motion of the robot and boxes in the warehouse. After the robot is finished moving, **what is the sum of all
 boxes' GPS coordinates?**
+
+Your puzzle answer was `1514333`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*

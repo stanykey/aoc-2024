@@ -3,6 +3,7 @@
 Language of choice: `Rust`
 
 ---
+
 ## Puzzles
 
 - [x] Day 1: Historian Hysteria
@@ -19,7 +20,7 @@ Language of choice: `Rust`
 - [x] Day 12: Garden Groups
 - [x] Day 13: Claw Contraption
 - [x] Day 14: Restroom Redoubt
-- [ ] Day 15
+- [ ] Day 15: Warehouse Woes
 - [ ] Day 16
 - [ ] Day 17
 - [ ] Day 18
