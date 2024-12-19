@@ -23,7 +23,7 @@ Language of choice: `Rust`
 - [x] Day 15: Warehouse Woes
 - [x] Day 16: Reindeer Maze
 - [x] Day 17: Chronospatial Computer
-- [ ] Day 18
+- [ ] Day 18: RAM Run
 - [ ] Day 19
 - [ ] Day 20
 - [ ] Day 21

@@ -84,3 +84,7 @@ OO.#OOO
 
 Simulate the first kilobyte (1024 bytes) falling onto your memory space. Afterward, **what is the minimum number of
 steps needed to reach the exit?**
+
+Your puzzle answer was `314`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
