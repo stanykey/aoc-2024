@@ -25,7 +25,7 @@ Language of choice: `Rust`
 - [x] Day 17: Chronospatial Computer
 - [x] Day 18: RAM Run
 - [x] Day 19: Linen Layout
-- [ ] Day 20
+- [ ] Day 20: Race Condition
 - [ ] Day 21
 - [ ] Day 22
 - [ ] Day 23

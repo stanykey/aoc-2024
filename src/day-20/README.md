@@ -147,3 +147,7 @@ In this example, the total number of cheats (grouped by the amount of time they 
 
 You aren't sure what the conditions of the racetrack will be like, so to give yourself as many options as possible,
 you'll need a list of the best cheats. **How many cheats would save you at least 100 picoseconds?**
+
+Your puzzle answer was `1387`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
