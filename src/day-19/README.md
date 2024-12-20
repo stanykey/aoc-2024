@@ -63,3 +63,7 @@ In this example, `6` of the eight designs are possible with the available towel 
 
 To get into the onsen as soon as possible, consult your list of towel patterns and desired designs carefully. **How many
 designs are possible?**
+
+Your puzzle answer was `242`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*

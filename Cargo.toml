@@ -79,3 +79,7 @@ path = "src/day-17/chronospatial-computer.rs"
 [[bin]]
 name = "ram-run"
 path = "src/day-18/ram-run.rs"
+
+[[bin]]
+name = "linen-layout"
+path = "src/day-19/linen-layout.rs"
