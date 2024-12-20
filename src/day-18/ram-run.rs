@@ -102,21 +102,21 @@ where
 struct MemoryGrid {
     width: usize,
     height: usize,
-    corrupted: HashSet<Point>,
+    corruptions: Vec<Point>,
 }
 
 impl MemoryGrid {
-    fn new(width: usize, height: usize, corrupted: HashSet<Point>) -> Self {
+    fn new(width: usize, height: usize, corruptions: Vec<Point>) -> Self {
         Self {
             width,
             height,
-            corrupted,
+            corruptions,
         }
     }
 
     fn print(&self) {
         let mut grid = vec![vec!['.'; self.width]; self.height];
-        for point in &self.corrupted {
+        for point in &self.corruptions {
             grid[point.y as usize][point.x as usize] = '#';
         }
 
@@ -128,10 +128,17 @@ impl MemoryGrid {
         }
     }
 
-    fn find_shortest_path(&self, start: &Point, end: &Point) -> Option<usize> {
+    fn find_shortest_path(&self, start: &Point, end: &Point, bytes_count: usize) -> Option<usize> {
         if start == end {
             return Some(0);
         }
+
+        let corruptions = self
+            .corruptions
+            .iter()
+            .take(bytes_count)
+            .map(|point| point.clone())
+            .collect::<HashSet<Point>>();
 
         let allowed = |point: &Point| {
             point
@@ -140,13 +147,24 @@ impl MemoryGrid {
                         && point.x < self.width as isize
                         && point.y >= 0
                         && point.y < self.height as isize
-                        && !self.corrupted.contains(point)
+                        && !corruptions.contains(point)
                 })
                 .into_iter()
                 .collect::<Vec<Point>>()
         };
 
         dijkstra(&start, &end, allowed)
+    }
+
+    fn find_first_blocker(&self, start: &Point, end: &Point, offset: usize) -> Option<Point> {
+        for i in offset..self.corruptions.len() {
+            match self.find_shortest_path(&start, &end, i) {
+                Some(_) => continue,
+                None => return Some(self.corruptions[i - 1]),
+            }
+        }
+
+        None
     }
 }
 
@@ -164,15 +182,7 @@ fn main() {
     const CORRUPTIONS_TO_PROCESS: usize = 1024;
 
     let corruptions = parse_input(input);
-    let memory = MemoryGrid::new(
-        MEMORY_GRID_WIDTH,
-        MEMORY_GRID_HEIGHT,
-        corruptions
-            .iter()
-            .take(CORRUPTIONS_TO_PROCESS)
-            .map(|point| point.clone())
-            .collect(),
-    );
+    let memory = MemoryGrid::new(MEMORY_GRID_WIDTH, MEMORY_GRID_HEIGHT, corruptions);
     memory.print();
 
     let start = Point::new(0, 0);
@@ -180,11 +190,23 @@ fn main() {
         (MEMORY_GRID_WIDTH - 1) as isize,
         (MEMORY_GRID_HEIGHT - 1) as isize,
     );
-    match memory.find_shortest_path(&start, &end) {
+    match memory.find_shortest_path(&start, &end, CORRUPTIONS_TO_PROCESS) {
         Some(steps) => {
             println!(
                 "The minimum number of steps needed to reach the exit is {}",
                 steps
+            );
+        }
+        None => {
+            println!("No path found");
+        }
+    }
+
+    match memory.find_first_blocker(&start, &end, CORRUPTIONS_TO_PROCESS) {
+        Some(point) => {
+            println!(
+                "The minimum number of steps needed to reach the exit is ({}, {})",
+                point.x, point.y
             );
         }
         None => {
