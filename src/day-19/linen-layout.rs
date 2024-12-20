@@ -16,7 +16,6 @@ fn load_towel_designs(input: &str) -> Vec<&str> {
     input.lines().skip(2).collect()
 }
 
-// Memoization function to avoid recalculating the same design
 fn find_combination(design: &str, patterns: &Vec<&str>, memo: &mut HashMap<String, bool>) -> bool {
     if let Some(&result) = memo.get(design) {
         return result;
@@ -41,13 +40,46 @@ fn find_combination(design: &str, patterns: &Vec<&str>, memo: &mut HashMap<Strin
     false
 }
 
-fn count_valid_designs(patterns: &Vec<&str>, designs: Vec<&str>) -> usize {
+fn count_possible_combination(
+    design: &str,
+    patterns: &Vec<&str>,
+    memo: &mut HashMap<String, usize>,
+) -> usize {
+    if let Some(&result) = memo.get(design) {
+        return result;
+    }
+
+    if design.is_empty() {
+        memo.insert(design.to_string(), 1);
+        return 1;
+    }
+
+    let mut total_ways = 0;
+    for pattern in patterns.iter() {
+        if design.starts_with(pattern) {
+            let remaining_design = &design[pattern.len()..];
+            total_ways += count_possible_combination(remaining_design, patterns, memo);
+        }
+    }
+
+    memo.insert(design.to_string(), total_ways);
+    total_ways
+}
+
+fn count_valid_designs(patterns: &Vec<&str>, designs: &Vec<&str>) -> usize {
     let mut memo = HashMap::new();
-    let design_count = designs
+    designs
         .iter()
         .filter(|design| find_combination(design, &patterns, &mut memo))
-        .count();
-    design_count
+        .count()
+}
+
+fn count_all_possible_combination(patterns: &Vec<&str>, designs: &Vec<&str>) -> usize {
+    let mut memo = HashMap::new();
+    designs
+        .iter()
+        .map(|design| count_possible_combination(design, &patterns, &mut memo))
+        .sum()
 }
 
 fn main() {
@@ -55,6 +87,9 @@ fn main() {
     let patterns = load_towel_patterns(input);
     let designs = load_towel_designs(input);
 
-    let design_count = count_valid_designs(&patterns, designs);
-    println!("There are {} possible designs", design_count);
+    let design_count = count_valid_designs(&patterns, &designs);
+    println!("There are {} valid designs", design_count);
+
+    let possible_design_count = count_all_possible_combination(&patterns, &designs);
+    println!("There are {} possible designs", possible_design_count);
 }

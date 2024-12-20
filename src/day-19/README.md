@@ -106,3 +106,7 @@ Adding up all of the ways the towels in this example could be arranged into the 
 
 They'll let you into the onsen as soon as you have the list. **What do you get if you add up the number of different
 ways you could make each design?**
+
+Your puzzle answer was `595975512785325`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*

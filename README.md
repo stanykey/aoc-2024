@@ -24,7 +24,7 @@ Language of choice: `Rust`
 - [x] Day 16: Reindeer Maze
 - [x] Day 17: Chronospatial Computer
 - [x] Day 18: RAM Run
-- [ ] Day 19: Linen Layout
+- [x] Day 19: Linen Layout
 - [ ] Day 20
 - [ ] Day 21
 - [ ] Day 22
