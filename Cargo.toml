@@ -87,3 +87,7 @@ path = "src/day-19/linen-layout.rs"
 [[bin]]
 name = "race-condition"
 path = "src/day-20/race-condition.rs"
+
+[[bin]]
+name = "keypad-conundrum"
+path = "src/day-21/keypad-conundrum.rs"

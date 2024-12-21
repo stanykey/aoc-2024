@@ -133,3 +133,7 @@ In the above example, complexity of the five codes can be found by calculating `
 
 Find the fewest number of button presses you'll need to perform in order to cause the robot in front of the door to type
 each code. **What is the sum of the complexities of the five codes on your list?**
+
+Your puzzle answer was `224326`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*

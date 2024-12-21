@@ -26,7 +26,7 @@ Language of choice: `Rust`
 - [x] Day 18: RAM Run
 - [x] Day 19: Linen Layout
 - [x] Day 20: Race Condition
-- [ ] Day 21
+- [ ] Day 21: Keypad Conundrum
 - [ ] Day 22
 - [ ] Day 23
 - [ ] Day 24
