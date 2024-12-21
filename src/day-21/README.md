@@ -160,3 +160,7 @@ The door codes are the same this time around; only the number of robots and dire
 
 Find the fewest number of button presses you'll need to perform in order to cause the robot in front of the door to type
 each code. **What is the sum of the complexities of the five codes on your list?**
+
+Your puzzle answer was `279638326609472`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*

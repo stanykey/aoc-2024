@@ -1,13 +1,13 @@
 use itertools::Itertools;
 use std::collections::{HashMap, HashSet, VecDeque};
 
-struct PathContext {
+struct PathFinder {
     numeric_paths: HashMap<(char, char), Vec<String>>,
     direction_paths: HashMap<(char, char), Vec<String>>,
     memo: HashMap<(String, usize, bool), usize>,
 }
 
-impl PathContext {
+impl PathFinder {
     fn new() -> Self {
         let numeric_keypad: HashMap<char, Vec<(char, char)>> = [
             ('7', vec![('4', 'v'), ('8', '>')]),
@@ -35,7 +35,7 @@ impl PathContext {
         .into_iter()
         .collect();
 
-        PathContext {
+        PathFinder {
             numeric_paths: Self::find_all_paths(&numeric_keypad),
             direction_paths: Self::find_all_paths(&direction_keypad),
             memo: HashMap::new(),
@@ -88,7 +88,7 @@ impl PathContext {
         paths
     }
 
-    fn find_shortest_sequence(&mut self, sequence: String, depth: usize, numeric: bool) -> usize {
+    fn find_optimal_sequence(&mut self, sequence: String, depth: usize, numeric: bool) -> usize {
         if let Some(&cached) = self.memo.get(&(sequence.clone(), depth, numeric)) {
             return cached;
         }
@@ -111,7 +111,7 @@ impl PathContext {
                         .cloned()
                         .map(|mut path| {
                             path.push('A');
-                            self.find_shortest_sequence(path, depth - 1, false)
+                            self.find_optimal_sequence(path, depth - 1, false)
                         })
                         .min()
                         .unwrap(),
@@ -126,20 +126,32 @@ impl PathContext {
 
 fn main() {
     let input = include_str!("input.data");
-    println!("{}", input);
 
-    let mut context = PathContext::new();
+    let mut finder = PathFinder::new();
 
-    let now = std::time::Instant::now();
+    let timer = std::time::Instant::now();
     println!(
         "The sum of the complexities of the five codes on my list is {}",
         input
             .lines()
             .map(|line| {
-                context.find_shortest_sequence(line.to_string(), 2, true)
+                finder.find_optimal_sequence(line.to_string(), 2, true)
                     * line.trim_end_matches('A').parse::<usize>().unwrap()
             })
             .sum::<usize>()
     );
-    println!("The time spent is {:?}", now.elapsed());
+    println!("The time spent is {:?}", timer.elapsed());
+
+    let timer = std::time::Instant::now();
+    println!(
+        "The sum of the complexities of the five codes on my list is {}",
+        input
+            .lines()
+            .map(|line| {
+                finder.find_optimal_sequence(line.to_string(), 25, true)
+                    * line.trim_end_matches('A').parse::<usize>().unwrap()
+            })
+            .sum::<usize>()
+    );
+    println!("The time spent is {:?}", timer.elapsed());
 }
