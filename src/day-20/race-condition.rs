@@ -162,23 +162,40 @@ fn main() {
         .collect::<Vec<_>>();
 
     let time_delta = 100;
-    let cheat_count = distances
+    let cheat_max_distances = vec![2, 20];
+    let cheat_counters = distances
         .iter()
         .enumerate()
-        .map(|(idx, (first, first_distance))| {
-            distances
-                .iter()
-                .skip(idx + 1)
-                .filter(|(second, second_distance)| {
-                    let distance = first.distance(second);
-                    distance == 2 && *second_distance - first_distance - distance >= time_delta
-                })
-                .count()
-        })
-        .sum::<usize>();
+        .map(|(offset, (first, first_distance))| {
+            distances.iter().skip(offset + 1).fold(
+                vec![0; cheat_max_distances.len()],
+                |mut accumulator, (second, second_distance)| {
+                    let current_distance = first.distance(second);
+                    let current_time_delta = *second_distance - first_distance - current_distance;
 
-    println!(
-        "There are {} cheats would save you at least {} picoseconds",
-        cheat_count, time_delta
-    );
+                    for (index, &max_distance) in cheat_max_distances.iter().enumerate() {
+                        if current_distance <= max_distance && current_time_delta >= time_delta {
+                            accumulator[index] += 1;
+                        }
+                    }
+
+                    accumulator
+                },
+            )
+        })
+        .reduce(|accumulator, cheat_counters| {
+            accumulator
+                .iter()
+                .zip(cheat_counters.iter())
+                .map(|(lhs, rhs)| lhs + rhs)
+                .collect::<Vec<_>>()
+        })
+        .unwrap_or_else(|| vec![0; cheat_max_distances.len()]); // default to zeros if no cheats found.
+
+    for (index, &max_distance) in cheat_max_distances.iter().enumerate() {
+        println!(
+            "There are {} cheats that save at least {} picoseconds with max distance {}",
+            cheat_counters[index], time_delta, max_distance
+        );
+    }
 }
