@@ -1,6 +1,15 @@
 # [Advent of Code 2024](https://adventofcode.com/2024)
 
-Language of choice: `Rust`
+I've done that year's (2024) challenges for fun and to practice with Rust (which I'd been learning at that moment in
+time) language without deep performance optimization since I prefer idiomatic and readable code until it really needs to
+be much faster, so most solutions are quick enough to do a job in seconds under debug build configuration.
+
+### Rules:
+
+- `Rust`
+- `Built-in only`
+- Try to use as much declarative style as I can :)
+- Consistently formatted with `rustfmt` and linted by `clippy` via [pre-commit](https://pre-commit.com/index.html)
 
 ---
 
