@@ -27,7 +27,7 @@ Language of choice: `Rust`
 - [x] Day 19: Linen Layout
 - [x] Day 20: Race Condition
 - [x] Day 21: Keypad Conundrum
-- [ ] Day 22
+- [ ] Day 22: Monkey Market
 - [ ] Day 23
 - [ ] Day 24
 - [ ] Day 25

@@ -91,3 +91,7 @@ path = "src/day-20/race-condition.rs"
 [[bin]]
 name = "keypad-conundrum"
 path = "src/day-21/keypad-conundrum.rs"
+
+[[bin]]
+name = "monkey-market"
+path = "src/day-22/monkey-market.rs"
