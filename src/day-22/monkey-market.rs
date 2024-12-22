@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 struct SecretGenerator {}
 
 impl SecretGenerator {
@@ -23,6 +25,56 @@ impl SecretGenerator {
         }
         number
     }
+
+    fn generate_sequence(&mut self, number: u64, count: usize) -> Vec<u64> {
+        let mut sequence = Vec::with_capacity(count);
+        sequence.reserve(count + 1);
+        sequence.push(number);
+
+        let mut current = number;
+        for _ in 0..count {
+            current = self.next(current);
+            sequence.push(current);
+        }
+
+        sequence
+    }
+}
+
+fn find_best_sequence(secret_numbers: &[u64]) -> (Vec<i64>, u64) {
+    let mut secret_generator = SecretGenerator::new();
+    let mut banana_count: HashMap<Vec<i64>, u64> = HashMap::new();
+
+    // step 1: process each secret
+    for &secret in secret_numbers {
+        let mut sequence_banana_count: HashMap<Vec<i64>, u64> = HashMap::new();
+        let sequence = secret_generator.generate_sequence(secret, 2000);
+        let prices: Vec<u64> = sequence.iter().map(|&num| num % 10).collect();
+        let changes: Vec<i64> = prices
+            .windows(2)
+            .map(|window| window[1] as i64 - window[0] as i64)
+            .collect();
+
+        for (i, window) in changes.windows(4).enumerate() {
+            if i + 4 < prices.len() {
+                let key = window.to_vec();
+
+                // record only the first occurrence of the sequence
+                sequence_banana_count.entry(key).or_insert(prices[i + 4]);
+            }
+        }
+
+        // step 2: aggregate into the final map
+        for (key, &value) in sequence_banana_count.iter() {
+            *banana_count.entry(key.clone()).or_insert(0) += value;
+        }
+    }
+
+    // step 3: find the best sequence
+    banana_count
+        .into_iter()
+        .max_by_key(|(_, bananas)| *bananas)
+        .unwrap()
 }
 
 fn load_secret_numbers(input: &str) -> Vec<u64> {
@@ -45,6 +97,14 @@ fn main() {
             .iter()
             .map(|&number| secret_generator.nth(number, 2000))
             .sum::<u64>()
+    );
+    println!("The time spent is {:?}", timer.elapsed());
+
+    let timer = std::time::Instant::now();
+    let (best_sequence, max_bananas) = find_best_sequence(&secret_numbers);
+    println!(
+        "The best sequence is {:?} and it generates the most bananas: {}",
+        best_sequence, max_bananas
     );
     println!("The time spent is {:?}", timer.elapsed());
 }
