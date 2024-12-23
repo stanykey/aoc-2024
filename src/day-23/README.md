@@ -81,3 +81,7 @@ td,wh,yn
 
 Find all the sets of three inter-connected computers. **How many contain at least one computer with a name that starts
 with t?**
+
+Your puzzle answer was `893`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*

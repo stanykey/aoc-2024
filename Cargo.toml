@@ -95,3 +95,7 @@ path = "src/day-21/keypad-conundrum.rs"
 [[bin]]
 name = "monkey-market"
 path = "src/day-22/monkey-market.rs"
+
+[[bin]]
+name = "lan-party"
+path = "src/day-23/lan-party.rs"
