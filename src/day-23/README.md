@@ -112,3 +112,7 @@ party, sorted alphabetically, then joined together with commas. (The people runn
 nerds.) In this example, the password would be `co,de,ka,ta`.
 
 **What is the password to get into the LAN party?**
+
+Your puzzle answer was `cw,dy,ef,iw,ji,jv,ka,ob,qv,ry,ua,wt,xz`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*
