@@ -145,3 +145,7 @@ Combining the bits from all wires starting with `z` produces the binary number `
 to decimal produces `2024`.
 
 Simulate the system of gates and wires. **What decimal number does it output on the wires starting with z?**
+
+Your puzzle answer was `57270694330992`.
+
+*__The first half of this puzzle is complete! It provides one gold star: *__*
