@@ -1,8 +1,9 @@
 use itertools::Itertools;
 use std::collections::HashMap;
+use std::collections::HashSet;
 use std::str::FromStr;
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
 enum GateKind {
     And,
     Or,
@@ -88,6 +89,53 @@ impl Circuit {
             .map(|gate| self.evaluate(&gate).to_string())
             .collect::<String>()
     }
+
+    pub fn find_swapped_wires(&self) -> Vec<String> {
+        let mut lookup = HashSet::new();
+        for (_, gate) in self.gates.iter() {
+            lookup.insert((&gate.lhs, gate.kind));
+            lookup.insert((&gate.rhs, gate.kind));
+        }
+
+        let mut swapped = HashSet::new();
+        for (to, gate) in self.gates.iter() {
+            match gate.kind {
+                GateKind::And => {
+                    // check that all AND gates point to an OR gate, except for the first AND gate
+                    if gate.lhs != "x00"
+                        && gate.rhs != "x00"
+                        && !lookup.contains(&(to, GateKind::Or))
+                    {
+                        swapped.insert(to.clone());
+                    }
+                }
+                GateKind::Or => {
+                    // check that only XOR gates point to output, except for the last carry (z45)
+                    if to.starts_with('z') && to != "z45" {
+                        swapped.insert(to.clone());
+                    }
+                }
+                GateKind::Xor => {
+                    if gate.lhs.starts_with('x') || gate.rhs.starts_with('x') {
+                        // first level XOR must point to a second level XOR, except for the first XOR gate
+                        if gate.lhs != "x00"
+                            && gate.rhs != "x00"
+                            && !lookup.contains(&(to, GateKind::Xor))
+                        {
+                            swapped.insert(to.clone());
+                        }
+                    } else {
+                        // second level XOR must point to an output (z-prefixed wires)
+                        if !to.starts_with('z') {
+                            swapped.insert(to.clone());
+                        }
+                    }
+                }
+            }
+        }
+
+        swapped.into_iter().sorted().collect()
+    }
 }
 
 #[derive(Debug)]
@@ -150,6 +198,13 @@ fn main() {
             let decimal_output = i64::from_str_radix(&binary_output, 2).unwrap();
             println!("Binary output: {}", binary_output);
             println!("Decimal output: {}", decimal_output);
+            println!("The time spent is {:?}", timer.elapsed());
+
+            let timer = std::time::Instant::now();
+            println!(
+                "Names of eight names involved in swap: {}",
+                system.find_swapped_wires().join(",")
+            );
             println!("The time spent is {:?}", timer.elapsed());
         }
         Err(e) => {

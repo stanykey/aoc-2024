@@ -38,7 +38,7 @@ be much faster, so most solutions are quick enough to do a job in seconds under 
 - [x] Day 21: Keypad Conundrum
 - [x] Day 22: Monkey Market
 - [x] Day 23: LAN Party
-- [ ] Day 24: Crossed Wires
+- [x] Day 24: Crossed Wires
 - [ ] Day 25
 
 ---

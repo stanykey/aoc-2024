@@ -248,3 +248,7 @@ Of course, your actual system is much more complex than this, and the gates that
 Your system of gates and wires has four pairs of gates which need their output wires swapped - **eight** wires in total.
 Determine which four pairs of gates need their outputs swapped so that your system correctly performs addition; **what
 do you get if you sort the names of the eight wires involved in a swap and then join those names with commas?**
+
+Your puzzle answer was `gwh,jct,rcb,wbw,wgb,z09,z21,z39`.
+
+*__Both parts of this puzzle are complete! They provide two gold stars: **__*
