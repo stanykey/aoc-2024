@@ -134,3 +134,7 @@ Then, you can try every key with every lock:
 So, in this example, the number of unique lock/key pairs that fit together without overlapping in any column is `3`.
 
 Analyze your lock and key schematics. **How many unique lock/key pairs fit together without overlapping in any column?**
+
+Your puzzle answer was `2840`.
+
+**__The first half of this puzzle is complete! It provides one gold star: *__*

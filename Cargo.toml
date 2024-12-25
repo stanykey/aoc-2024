@@ -103,3 +103,7 @@ path = "src/day-23/lan-party.rs"
 [[bin]]
 name = "crossed-wires"
 path = "src/day-24/crossed-wires.rs"
+
+[[bin]]
+name = "code-chronicle"
+path = "src/day-25/code-chronicle.rs"
