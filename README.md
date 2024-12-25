@@ -13,6 +13,8 @@ be much faster, so most solutions are quick enough to do a job in seconds under 
 
 ---
 
+![My Image](./fifty-stars.png)
+
 ## Puzzles
 
 - [x] Day 1: Historian Hysteria
