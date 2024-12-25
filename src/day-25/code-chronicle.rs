@@ -44,20 +44,14 @@ struct LockSystem {
 
 impl LockSystem {
     fn count_fitting_pairs(&self) -> usize {
-        println!("locks: {:?}", self.locks);
-        println!("keys: {:?}", self.keys);
-
-        let mut count = 0;
-
-        for lock in &self.locks {
-            for key in &self.keys {
-                if key.fits_lock_as_key(lock) {
-                    count += 1;
-                }
-            }
-        }
-
-        count
+        self.locks
+            .iter()
+            .flat_map(|lock| {
+                self.keys
+                    .iter()
+                    .filter(move |key| key.fits_lock_as_key(lock))
+            })
+            .count()
     }
 }
 
